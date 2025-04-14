@@ -8,6 +8,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+
     steps:
       # Get code from repo
       - name: Checkout code
@@ -19,21 +20,25 @@ jobs:
           node-version: 21.x
 
       # Install dependencies
-      - name: Install Deps
-        run: npm install
+      - name: Install Dependencies
+        run: |
+          npm install
+          cd client && npm install
+          cd ../server && npm install
+          cd ..
 
-      # Run build
+      # Build project (adjust if only client needs building)
       - name: Run Build
         run: npm run build
 
-      # Start the server
-      - name: Start Server
-        run: npm start &
+      # Start the server in the background and wait for it to be ready
+      - name: Start Server and Wait
+        run: |
+          npm run start &
+          npx wait-on http://localhost:3001
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
 
-      # Wait for the server to be ready
-      - name: Wait for Server
-        run: sleep 20
-        
-      # Run tests
-      - name: Run Tests
+      # Run Cypress component tests
+      - name: Run Cypress Tests
         run: npm run test-component
