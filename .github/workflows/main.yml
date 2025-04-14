@@ -34,7 +34,8 @@ jobs:
       # Start the server in the background and wait for it to be ready
       - name: Start Server and Wait
         run: |
-          npm run start &
+          cd server
+          npm start &
           npx wait-on http://localhost:3001
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
