@@ -36,6 +36,8 @@ jobs:
         run: |
           cd server
           npm start &
+          sleep 3
+          curl http://localhost:3001 || echo "Server not yet responding"
           npx wait-on http://localhost:3001
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
